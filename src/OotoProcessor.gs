@@ -2,12 +2,11 @@ function processOotoMessages() {
   Logger.log('Processing');
   var settings = getOrCreateSettings();
   if (settings.appEnabled) {
-    var activeOttoEvent = getActiveOotoEvent(settings.calendarEventTitle);
-    var responseSubject = activeOttoEvent.getLocation();
-    var responseBody = activeOttoEvent.getDescription();
-    
+    var activeOttoEvent = getActiveOotoEvent(settings.calendarEventTitle);    
     if (activeOttoEvent) {
-      Logger.log('There is an active OTOO event with title ' + activeOttoEvent.getTitle());
+      Logger.log('There is an active OTOO event with title "' + activeOttoEvent.getTitle() + '"');
+      var responseSubject = activeOttoEvent.getLocation();
+      var responseBody = activeOttoEvent.getDescription();
       var threadsToRespondTo = getMatchingThreads(activeOttoEvent.getStartTime(), activeOttoEvent.getEndTime(), settings.emailFilter);
       if (threadsToRespondTo.length > 0) {
         Logger.log('There are ' + threadsToRespondTo.length + ' qualifying threads');
@@ -26,9 +25,11 @@ function processOotoMessages() {
         }
       }
     } else {
+      Logger.log('Clearing processed thread IDs');
       setProcessedThreadIDs([]);
     }
   } else {
+    Logger.log('Clearing processed thread IDs');
     setProcessedThreadIDs([]);
   }
   Logger.log('Done processing');
@@ -64,6 +65,11 @@ function createFilter(startDate, endDate, extraFilterText) {
     filter += (" " + replaceLineBreaks(extraFilterText, " "));
   }
   return filter;
+}
+
+function replaceLineBreaks(text, newDelimiter)
+{
+  return text.replace(/(\r\n|\n|\r)/gm, newDelimiter);
 }
 
 function getDateString(date) {

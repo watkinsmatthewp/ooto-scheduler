@@ -4,15 +4,15 @@
         // Load the settings and display them on the page
 		google.script.run
 		.withSuccessHandler(function (settings) {
-			populateSettingsFields(settings);
+            populateSettingsFields(settings);
             var now = new Date();
             if (settings.nextRatingPromptDate == null || settings.nextRatingPromptDate <= now) {
               // Time to annoy them with a modal
               $('#modalContainer').show();
             }
-			showAlertMessage('Settings loaded successfully', false, 2000);
+			showAlertMessage('Settings loaded successfully');
 		}).withFailureHandler(function (err) {
-            showAlertMessage('Error loading settings: \"' + err + '.\" Please wait a moment, refresh your browser, and try again', true, -1);
+            showAlertMessage('Error loading settings: \"' + err + '.\" Please wait a moment, refresh your browser, and try again');
 		}).getOrCreateSettings();
         
         // Attach an event to the rate link
@@ -25,7 +25,7 @@
           window.open('https://chrome.google.com/webstore/detail/ooto-scheduler/feiknodbimkndjjeldljfjlcleehpmda/reviews', '_blank');
           google.script.run
           .withSuccessHandler(function() {
-            showAlertMessage('Thanks!', false, 5000);
+            showAlertMessage('Thanks!');
             $('#modalContainer').hide();
 		  })
           .setNextRatingPromptDate(-1);
@@ -35,7 +35,7 @@
         $('#btnRateLater').click(function() {
           google.script.run
           .withSuccessHandler(function() {
-            showAlertMessage('Maybe later? OK, sure.', false, 5000);
+            showAlertMessage('Maybe later? OK, sure.');
             $('#modalContainer').hide();
 		  })
           .setNextRatingPromptDate(7);
@@ -45,7 +45,7 @@
         $('#btnRateNever').click(function() {
           google.script.run
           .withSuccessHandler(function() {
-            showAlertMessage('Ouch, that really hurt', false, 5000);
+            showAlertMessage('Ouch, that really hurt');
             $('#modalContainer').hide();
 		  })
           .setNextRatingPromptDate(-1);
@@ -60,14 +60,14 @@
 
 		// Attach an event to the save button
 		$('#btnSave').click(function () {
-			showAlertMessage('Saving settings and setting up labels. This may take a few moments. Please wait...', true, -1);
+			showAlertMessage('Saving settings. This may take a few moments. Please wait...');
 			google.script.run
 			.withSuccessHandler(function (settings) {
 				populateSettingsFields(settings);
-				showAlertMessage('Settings saved successfully', false, 2000);
+				showAlertMessage('Settings saved successfully');
 			})
 			.withFailureHandler(function (err) {
-                showAlertMessage('Error saving settings: \"' + err + '.\" Please fix any errors and try again.', true, -1);
+                showAlertMessage('Error saving settings: \"' + err + '.\" Please fix any errors and try again.');
 			})
 			.validateAndSetSettings(parseFromSettingsFields());
 		});
@@ -87,12 +87,7 @@
 		$('#emailFilter').val(settings.emailFilter || '');
 	}
 
-	function showAlertMessage(text, keepAlive, aliveTime) {
-		var alertBox = $('#plsWaitAlert');
-		alertBox.text(text);
-		alertBox.fadeTo(400, 1);
-        if (!keepAlive) {
-          alertBox.delay(aliveTime).fadeTo(1000, 0);
-        }
+	function showAlertMessage(text) {
+		$('#plsWaitAlert').text(text);
 	}
 </script>
